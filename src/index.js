@@ -1,17 +1,43 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+
+class App extends React.Component{
+    constructor(props) { 
+        super(props);
+
+        this.state = { lat: null, errorMenssage: '' };
+
+        window.navigator.geolocation.getCurrentPosition(
+            position => {
+                // we called setstate!!!!!
+                this.setState({ lat: position.coords.latitude })
+
+                // wi did not!!!
+                //this.state.lat = position.coords.latitude
+            },
+            
+            err => {
+                this.setState({ errorMenssage: err.message });
+            }
+        );
+    }
+
+    render() {
+        if (this.state.errorMenssage && !this.state.lat) {
+            return (            
+                <div>Error: {this.state.errorMenssage}</div>
+            );    
+        }
+        if (this.state.lat != null ) {
+            return (            
+                <div>Latitud: {this.state.lat}</div>
+            );    
+        }
+
+        return (<div>Loading!</div>);
+    }
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+    <App />, document.querySelector('#root')
+)
